@@ -8,11 +8,14 @@ import org.openqa.selenium.WebElement;
 import java.util.List;
 
 public class DetailsPage  extends MainPage{
-    public DetailsPage(WebDriver driver) {
-        super(driver);
-    }
+    protected WebDriver driver;
+
 
     private final By te = By.xpath("//table/tbody/tr[1]/td[5]/div");
+
+    public DetailsPage(WebDriver driver, String DateFrom, String DateTo, String HotelName) {
+        super(driver, DateFrom, DateTo, HotelName);
+    }
 
 
     public String confirmResrvation()

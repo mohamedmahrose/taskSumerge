@@ -1,7 +1,6 @@
 package com.sumerge.automation.task.Pages;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -14,39 +13,54 @@ public class MainPage {
     protected WebDriverWait wait;
     protected Select select;
 
+    protected String DateFrom;
+    protected String DateTo;
+    protected String HotelName;
 
-    public MainPage(WebDriver driver) {
+    public MainPage(WebDriver driver, String DateFrom, String DateTo, String HotelName) {
+
         this.driver = driver;
+        this.DateFrom = DateFrom;
+        this.DateTo = DateTo;
+        ;
+        this.HotelName = HotelName;
     }
 
 
     private final By locationToReserve = By.name("ss");
     private final By calender = By.xpath("//div[@data-testid='searchbox-dates-container']");
 
-    private final By calenderFrom = By.cssSelector("span[aria-label='31 March 2024']");
-    private final By calenderTo = By.cssSelector("span[aria-label='16 April 2024'] span");
+    //private final By calenderFrom = By.xpath("//span[@aria-label='"+this.DateFrom +"']"); //By.cssSelector("span[aria-label='"+DateFrom +"']");
+    //private final By calenderTo = By.cssSelector("span[aria-label='"+this.DateTo +"'] span");
     private final By exitButton = By.xpath("//button[@aria-label='Dismiss sign-in info.']");
 
     private final By submitButton = By.xpath("//button[@type='submit']");
 
-    private final By hotelName = By.xpath("//div[contains(text(),'Tolip Hotel')]");
+    private final By hotelName = By.xpath("//div[contains(text(),'Tolip Hotel Alexandria')]");
 
 
     public String reserverHotel() {
         try {
+
+
+
             driver.get("https://www.booking.com/");
 
             click(exitButton);
 
-            sendKeys(locationToReserve, "Alexandria");
+            sendKeys(locationToReserve, HotelName);
 
             click(calender);
-
-            click(calenderFrom);
+            WebElement dateFrom = driver.findElement(By.xpath("//span[@data-date='" + this.DateFrom + "']"));
+            dateFrom.click();
+            //click();
+            WebElement dateTo = driver.findElement(By.xpath("//span[@data-date='" + this.DateTo + "']"));
+            dateTo.click();
             Thread.sleep(2000);
-            click(calenderTo);
+            //click(calenderTo);
             Thread.sleep(2000);
             click(submitButton);
+            findHotelName();
             click(hotelName);
             Thread.sleep(10000);
             //scrollToElement(driver,selectAmountList);
@@ -121,8 +135,36 @@ public class MainPage {
         js.executeScript("arguments[0].scrollIntoView(true);", element);
     }
 
-    public void selectFromDropDownMenu(By locator,String number) {
-    select = new Select(driver.findElement(locator));
-    select.selectByValue(number);
+    public void selectFromDropDownMenu(By locator, String number) {
+        wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeSelected(locator));
+        select = new Select(driver.findElement(locator));
+        select.selectByValue(number);
+    }
+
+
+    public void findHotelName() {
+        // Loop to search through pages
+        boolean found = false;
+        while (!found) {
+            // Get all hotel names on current page
+            java.util.List<WebElement> hotelElements = driver.findElements(By.xpath("//div[contains(text(),'Tolip Hotel Alexandria')]"));
+            // Check each hotel name for specific name
+            for (WebElement hotelElement : hotelElements) {
+                String hotelName = hotelElement.getText();
+                if (hotelName.contains("tolip")) {
+                    System.out.println("Specific name found: " + hotelName);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                //WebElement nextPageButton = driver.findElement(By.xpath("//button[@aria-label='Next page']"));
+
+                    click(By.xpath("//button[@aria-label='Next page']"));
+
+            }
+
+        }
     }
 }

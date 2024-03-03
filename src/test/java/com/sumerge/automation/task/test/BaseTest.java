@@ -2,12 +2,17 @@ package com.sumerge.automation.task.test;
 
 import com.sumerge.automation.task.Pages.DetailsPage;
 import com.sumerge.automation.task.Pages.MainPage;
+import com.sumerge.automation.task.dataModel.ExcelReader;
+import org.apache.poi.ss.usermodel.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
+import javax.xml.datatype.DatatypeFactory;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class BaseTest {
@@ -17,7 +22,7 @@ public class BaseTest {
     ArrayList MainTestData = new ArrayList();
     String actual;
 
-
+    String [] Data;
 
 
     @BeforeTest(description = "Setup the web Driver")
@@ -43,14 +48,15 @@ public class BaseTest {
 
     }
 
- @Test
-public void reserveHotel()
+ @Test(dataProvider = "TestData")
+public void reserveHotel(String DateFrom,String DateTo, String HotelName)
  {
-    // driver.get("https://www.booking.com/");
-     MainPage main = new MainPage(driver);
+
+
+     MainPage main = new MainPage(driver,DateFrom,DateTo,HotelName);
      actual = main.reserverHotel();
      Assert.assertEquals(actual,"Pass");
-     DetailsPage details = new DetailsPage(driver);
+     DetailsPage details = new DetailsPage(driver,DateFrom,DateTo,HotelName);
 
      actual = details.confirmResrvation();
      Assert.assertEquals(actual,"Pass");
@@ -62,12 +68,14 @@ public void reserveHotel()
         }
     }
 
-    @DataProvider(name = "Main TestData")
-    public Object[][] hotelInfoDP() {
-        Object[][] DP = new Object[MainTestData.size()][1];
-        for (int i = 0; i < MainTestData.size(); i++)
-            DP[i][0] = MainTestData.get(i);
-
-        return DP;
+    @DataProvider(name="TestData")
+    public static Object[][] TestData()
+    {
+        ExcelReader Er = new ExcelReader();
+        return Er.getExcelData();
     }
+
+
+
+
 }
