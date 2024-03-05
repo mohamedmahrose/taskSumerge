@@ -1,5 +1,6 @@
 package com.sumerge.automation.task.test;
 
+import com.sumerge.automation.task.Pages.ConfirmationPage;
 import com.sumerge.automation.task.Pages.DetailsPage;
 import com.sumerge.automation.task.Pages.MainPage;
 import com.sumerge.automation.task.dataModel.ExcelReader;
@@ -49,17 +50,20 @@ public class BaseTest {
     }
 
  @Test(dataProvider = "TestData")
-public void reserveHotel(String DateFrom,String DateTo, String HotelName)
+public void reserveHotel(String DateFrom,String DateTo, String Location)
  {
 
 
-     MainPage main = new MainPage(driver,DateFrom,DateTo,HotelName);
+     MainPage main = new MainPage(driver,DateFrom,DateTo,Location);
      actual = main.reserverHotel();
      Assert.assertEquals(actual,"Pass");
-     DetailsPage details = new DetailsPage(driver,DateFrom,DateTo,HotelName);
+     DetailsPage details = new DetailsPage(driver,DateFrom,DateTo,Location);
 
      actual = details.confirmResrvation();
      Assert.assertEquals(actual,"Pass");
+     ConfirmationPage confirm = new ConfirmationPage(driver,DateFrom,DateTo,Location);
+     actual = confirm.reserve();
+     Assert.assertEquals(actual,"Tolip Hotel Alexandria");
  }
     @AfterSuite(description = "Closing all active drivers", alwaysRun = true)
     public void tearDown() {

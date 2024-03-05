@@ -11,7 +11,8 @@ public class DetailsPage  extends MainPage{
     protected WebDriver driver;
 
 
-    private final By te = By.xpath("//table/tbody/tr[1]/td[5]/div");
+    private final By selectAmount = By.xpath("//table/tbody/tr[1]/td[5]//select");
+    private final By reserveBtn = By.xpath("//button[@id='b_tt_holder_1']");
 
     public DetailsPage(WebDriver driver, String DateFrom, String DateTo, String HotelName) {
         super(driver, DateFrom, DateTo, HotelName);
@@ -26,7 +27,8 @@ public class DetailsPage  extends MainPage{
 
 
 
-            selectFromDropDownMenu(te,"1");
+            selectFromDropDownMenu(selectAmount,"1");
+            click(reserveBtn);
 
             return "Pass";
         }

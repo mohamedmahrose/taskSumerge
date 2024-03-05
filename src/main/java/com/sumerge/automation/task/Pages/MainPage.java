@@ -36,7 +36,7 @@ public class MainPage {
 
     private final By submitButton = By.xpath("//button[@type='submit']");
 
-    private final By hotelName = By.xpath("//div[contains(text(),'Tolip Hotel Alexandria')]");
+    private final By SeeAvailabilityHotelName = By.xpath("//div[@data-testid=\"property-card-container\"]//div[contains(text(),'Tolip Hotel Alexandria')]//..//..//..//..//..//..//..//..//..//span[contains(text(), 'availability')]");
 
 
     public String reserverHotel() {
@@ -53,19 +53,16 @@ public class MainPage {
             click(calender);
             WebElement dateFrom = driver.findElement(By.xpath("//span[@data-date='" + this.DateFrom + "']"));
             dateFrom.click();
-            //click();
+
             WebElement dateTo = driver.findElement(By.xpath("//span[@data-date='" + this.DateTo + "']"));
             dateTo.click();
-            Thread.sleep(2000);
-            //click(calenderTo);
-            Thread.sleep(2000);
+
+
             click(submitButton);
             findHotelName();
-            click(hotelName);
-            Thread.sleep(10000);
-            //scrollToElement(driver,selectAmountList);
-            //click(selectAmountList);
-            //Thread.sleep(10000);
+            click(SeeAvailabilityHotelName);
+
+
             return "Pass";
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,9 +75,9 @@ public class MainPage {
     public void verifyElementExist(WebElement element) {
         try {
             waitUntilElementVisible(element);
-            // Log.info(element.getText() + " Object is Visible");
+
         } catch (Exception e) {
-            //Log.info("Object is not Visible");
+
         }
     }
 
@@ -152,18 +149,18 @@ public class MainPage {
             // Check each hotel name for specific name
             for (WebElement hotelElement : hotelElements) {
                 String hotelName = hotelElement.getText();
-                if (hotelName.contains("tolip")) {
+                if (hotelName.contains("Tolip")) {
                     System.out.println("Specific name found: " + hotelName);
                     found = true;
                     break;
                 }
-            }
-            if (!found) {
-                //WebElement nextPageButton = driver.findElement(By.xpath("//button[@aria-label='Next page']"));
-
-                    click(By.xpath("//button[@aria-label='Next page']"));
 
             }
+            if(!found) {
+                click(By.xpath("//button[@aria-label='Next page']"));
+
+            }
+
 
         }
     }
